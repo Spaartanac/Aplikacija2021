@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { promises } from 'fs';
+import { resolve } from 'path';
+import { ApiResponse } from 'src/misc/Api.Response.class';
 import { Repository } from 'typeorm';
 import { Administrator } from '../../../entities/administrator.entity';
 import { AddAdministratorDto } from '../../dtos/administrator/add.administrator.dto';
@@ -17,11 +19,11 @@ export class AdministratorService {
         return this.administrator.find();
     }
 
-    getById(id: number): Promise<Administrator>{
+    getById(id: number): Promise<Administrator |ApiResponse>{
         return this.administrator.findOne(id);
     }
 
-    add(data: AddAdministratorDto){
+    add(data: AddAdministratorDto): Promise<Administrator|ApiResponse>{
         const crypto = require('crypto');
         
         const passwordHash = crypto.createHash('sha512');
@@ -33,11 +35,24 @@ export class AdministratorService {
         newAdmin.username = data.username;
         newAdmin.passwordHash = passwordHashString;
         
-        return this.administrator.save(newAdmin);
+        return new Promise((resolve) => {
+            this.administrator.save(newAdmin)
+            .then(data => resolve(data))
+            .catch(error => {
+                const response: ApiResponse = new ApiResponse("error", -1001);
+                resolve(response);
+            });
+        });
     }
 
-    async editById(id:number, data: EditAdministratorDto): Promise<Administrator>{
+    async editById(id:number, data: EditAdministratorDto): Promise<Administrator | ApiResponse>{
         let admin: Administrator = await this.administrator.findOne(id);
+
+        if (admin === undefined){
+            return new Promise((resolve) => {
+                resolve(new ApiResponse("error", - 1002));
+            });
+        }
         const crypto = require('crypto');
         const passwordHash = crypto.createHash('sha512');
         passwordHash.update(data.password);
