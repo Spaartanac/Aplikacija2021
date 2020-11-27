@@ -46,6 +46,9 @@ import { ArticleService } from './services/article/article.service';
       Administrator,
       Category,
       Article,
+      ArticlePrice,
+      ArticleFeature,
+      
 
 
 
