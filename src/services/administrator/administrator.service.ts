@@ -19,13 +19,22 @@ export class AdministratorService {
         return this.administrator.find();
     }
 
+    async getByUsername(username: string): Promise<Administrator | null> {
+        const admin = await this.administrator.findOne({
+            username: username
+        });
+        if (admin){
+            return admin;
+        }
+        return null;
+    }
+
     getById(id: number): Promise<Administrator |ApiResponse>{
         return this.administrator.findOne(id);
     }
 
     add(data: AddAdministratorDto): Promise<Administrator|ApiResponse>{
         const crypto = require('crypto');
-        
         const passwordHash = crypto.createHash('sha512');
         passwordHash.update(data.password);
 

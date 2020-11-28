@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfiguration } from '../config/database.configuration';
 import { Administrator } from '../entities/administrator.entity';
@@ -14,11 +14,14 @@ import { Photo } from '../entities/photo.entity';
 import { User } from '../entities/user.entity';
 import { AdministratorController } from './controlers/api/administrator.controller';
 import { ArticleController } from './controlers/api/article.controller';
+import { AuthController } from './controlers/api/auth.controller';
 import { CagetoryController } from './controlers/api/category.controller';
 import { AppController } from './controlers/app.controller';
+import { AuthMiddleware } from './middlewares/auth.middleware';
 import { AdministratorService } from './services/administrator/administrator.service';
 import { CategoryService } from './services/administrator/category/category.service';
 import { ArticleService } from './services/article/article.service';
+
 
 @Module({
   imports: [
@@ -49,6 +52,7 @@ import { ArticleService } from './services/article/article.service';
       ArticlePrice,
       ArticleFeature,
       
+      
 
 
 
@@ -61,10 +65,24 @@ import { ArticleService } from './services/article/article.service';
     AdministratorController,
     CagetoryController,
     ArticleController,
+    AuthController,
   ],
-  providers: [AdministratorService,
+  providers: [
+    AdministratorService,
     CategoryService,
     ArticleService,  
   ],
+  exports: [
+    AdministratorService,
+    
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+    .apply(AuthMiddleware)
+    .exclude('auth/*')
+    .forRoutes('api/*');
+
+  }
+}
