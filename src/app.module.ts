@@ -21,6 +21,7 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
 import { AdministratorService } from './services/administrator/administrator.service';
 import { CategoryService } from './services/administrator/category/category.service';
 import { ArticleService } from './services/article/article.service';
+import { PhotoService } from './services/photo/photo.service';
 
 
 @Module({
@@ -47,11 +48,16 @@ import { ArticleService } from './services/article/article.service';
     }),
     TypeOrmModule.forFeature([
       Administrator,
-      Category,
-      Article,
-      ArticlePrice,
       ArticleFeature,
-      
+      ArticlePrice,
+      Article,
+      CartArticle,
+      Cart,
+      Category,
+      Feature,
+      Order,
+      Photo,
+      User,
       
 
 
@@ -71,6 +77,7 @@ import { ArticleService } from './services/article/article.service';
     AdministratorService,
     CategoryService,
     ArticleService,  
+    PhotoService,
   ],
   exports: [
     AdministratorService,
