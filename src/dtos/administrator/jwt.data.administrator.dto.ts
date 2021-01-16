@@ -1,7 +1,7 @@
 export class JwtDataAdministrtatorDto{
     administratorId: number;
     username: string;
-    ext: number;
+    exp: number;
     ip: string;
     ua: string;
 
@@ -9,7 +9,7 @@ export class JwtDataAdministrtatorDto{
         return {
             administratorId: this.administratorId,
             username : this.username,
-            ext : this.ext,
+            exp : this.exp,
             ip : this.ip,
             ua : this.ua
         }

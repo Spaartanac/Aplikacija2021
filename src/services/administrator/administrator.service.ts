@@ -4,7 +4,7 @@ import { promises } from 'fs';
 import { resolve } from 'path';
 import { ApiResponse } from 'src/misc/Api.Response.class';
 import { Repository } from 'typeorm';
-import { Administrator } from '../../../entities/administrator.entity';
+import { Administrator } from '../../controlers/entities/administrator.entity';
 import { AddAdministratorDto } from '../../dtos/administrator/add.administrator.dto';
 import { EditAdministratorDto } from '../../dtos/administrator/edit.administrator.dto';
 import * as crypto from 'crypto';

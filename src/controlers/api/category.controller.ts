@@ -1,6 +1,6 @@
 import { Controller } from "@nestjs/common";
 import { Crud } from "@nestjsx/crud";
-import { Category } from "entities/category.entity";
+import { Category } from "src/controlers/entities/category.entity";
 import { features } from "process";
 import { CategoryService } from "src/services/administrator/category/category.service";
 

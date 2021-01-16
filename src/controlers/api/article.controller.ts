@@ -1,14 +1,14 @@
 import { Body, Controller, Param, Post, Req, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Crud } from "@nestjsx/crud";
-import { Article } from "entities/article.entity";
+import { Article } from "src/controlers/entities/article.entity";
 import { features } from "process";
 import { AddArticleDto } from "src/dtos/article/add.article.dto";
 import { ArticleService } from "src/services/article/article.service";
 import {diskStorage} from "multer";
 import { StorageConfig } from "config/storage.config";
 import { PhotoService } from "src/services/photo/photo.service";
-import { Photo } from "entities/photo.entity";
+import { Photo } from "src/controlers/entities/photo.entity";
 import { ApiResponse } from "src/misc/Api.Response.class";
 import * as fileType from 'file-type';
 import * as fs from 'fs';
@@ -60,7 +60,7 @@ export class ArticleController{
     @UseInterceptors(
         FileInterceptor('photo', {
             storage: diskStorage({      
-                destination: StorageConfig.photoDestination,
+                destination: StorageConfig.photo.destination,
                 filename: (req, file, callback) =>{
                     let original = file.originalname;
                     
@@ -99,7 +99,7 @@ export class ArticleController{
             },
             limits: {   
                 files: 1,
-                fileSize: StorageConfig.photoMaxFileSize,
+                fileSize: StorageConfig.photo.maxSize,
             },
         })
     )
@@ -128,8 +128,8 @@ export class ArticleController{
             return new ApiResponse('error', -4002, 'Bad file content type!');
         }
 
-        await this.createThumb(photo);
-        await this.createSmallImage(photo);
+        await this.createResizedImage(photo, StorageConfig.photo.resize.thumb);
+        await this.createResizedImage(photo, StorageConfig.photo.resize.small);
 
        const newPhoto: Photo = new Photo();
        newPhoto.articleId = aricleId;
@@ -140,41 +140,26 @@ export class ArticleController{
            return new ApiResponse('error', -4001);
        }
        return savedPhoto;
-
-
     }
 
     async createThumb(photo){
-        const originalFilePath = photo.path;
-        const fileName = photo.filename;
-
-        const destinationFilePath = StorageConfig.photoDestination + "thumb/" + fileName;
-       await sharp(originalFilePath)
-        .resize({
-            fit:'cover',
-            width: StorageConfig.photoThumbSize.width,
-            height: StorageConfig.photoThumbSize.height,
-            background:{
-                r: 255, g:255, b:255, alpha: 0.0
-            }
-        })
-        .toFile(destinationFilePath);
+      await this.createResizedImage(photo, StorageConfig.photo.resize.thumb);
     }
     async createSmallImage(photo){
+      await this.createResizedImage(photo, StorageConfig.photo.resize.small);
+    }
+
+    async createResizedImage(photo , resizeSettings){
         const originalFilePath = photo.path;
         const fileName = photo.filename;
 
-        const destinationFilePath = StorageConfig.photoDestination + "small/" + fileName;
+        const destinationFilePath = StorageConfig.photo.destination + resizeSettings.directory + fileName;
        await sharp(originalFilePath)
         .resize({
             fit:'cover',
-            width: StorageConfig.photoSmallSize.width,
-            height: StorageConfig.photoSmallSize.height,
-            background:{
-                r: 255, g:255, b:255, alpha: 0.0
-            }
+            width: resizeSettings.width,
+            height: resizeSettings.height,
         })
         .toFile(destinationFilePath);
-
     }
 }
