@@ -19,9 +19,11 @@ import { CagetoryController } from './controlers/api/category.controller';
 import { AppController } from './controlers/app.controller';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { AdministratorService } from './services/administrator/administrator.service';
-import { CategoryService } from './services/administrator/category/category.service';
+import { CategoryService } from './services/category/category.service';
 import { ArticleService } from './services/article/article.service';
 import { PhotoService } from './services/photo/photo.service';
+import { FeatureService } from './services/feature/feature.service';
+import { FeatureController } from './controlers/api/feature.controller';
 
 
 @Module({
@@ -72,12 +74,14 @@ import { PhotoService } from './services/photo/photo.service';
     CagetoryController,
     ArticleController,
     AuthController,
+    FeatureController,
   ],
   providers: [
     AdministratorService,
     CategoryService,
     ArticleService,  
     PhotoService,
+    FeatureService,
   ],
   exports: [
     AdministratorService,
