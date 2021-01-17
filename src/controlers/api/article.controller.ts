@@ -48,7 +48,22 @@ import { AllowToRoles } from "src/misc/allow.to.roles.descriptor";
         }
     },
     routes:{   
-        exclude: ['updateOneBase', 'replaceOneBase', 'deleteOneBase'],
+        only:[
+            'getOneBase',
+            'getManyBase',
+        ],
+        getOneBase:{
+            decorators:[ 
+                UseGuards(RoleCheckedGuard),
+                AllowToRoles('administrator', 'user')
+            ],
+        },
+        getManyBase:{
+            decorators:[ 
+                UseGuards(RoleCheckedGuard),
+                AllowToRoles('administrator', 'user')
+            ],
+        },
      },
 })
 export class ArticleController{
@@ -59,7 +74,7 @@ export class ArticleController{
         
    @UseGuards(RoleCheckedGuard)
    @AllowToRoles('administrator')
-    @Post('createFull')    // POST http://localhost:3000/api/article/createFull/
+    @Post()    // POST http://localhost:3000/api/article/
     createFullArticle(@Body() data: AddArticleDto){
         return this.service.createFullArticle(data);
     }
