@@ -6,12 +6,17 @@ import { Cart } from "../entities/cart.entity";
 import { Request } from "express";    
 import { AddArticleToCartDto } from "src/dtos/cart/add.article.to.cart.dto";
 import { EditArticleInCartDto } from "src/dtos/cart/edit.article.in.cart.dto";
+import { Order } from "../entities/order.entity";
+import { request } from "http";
+import { OrderService } from "src/services/order/order.service";
+import { ApiResponse } from "src/misc/Api.Response.class";
 
 
 @Controller('api/user/cart')
 export class UserCartController{
     constructor(
-        private cartService:CartService
+        private cartService:CartService,
+        private orderService:OrderService,
     ){ }
     private async getActiveCartForUserId(userId:number): Promise<Cart>{
         let cart =  await this.cartService.getLastActiveCartByUserId(userId);
@@ -46,5 +51,13 @@ export class UserCartController{
   async changeQuantity(@Body() data: EditArticleInCartDto , @Req() req:Request): Promise<Cart>{
     const cart =  await this.getActiveCartForUserId(req.token.id);
     return await this.cartService.changeQuantity(cart.cartId, data.articleId, data.quantity)
+    }
+
+    @Post('makeOrder')
+    @UseGuards(RoleCheckedGuard)
+    @AllowToRoles('user')
+    async makeOrder(@Req() req:Request): Promise<Order | ApiResponse>{
+      const cart =  await this.getActiveCartForUserId(req.token.id);
+      return await this.orderService.add(cart.cartId);
     }
 }
