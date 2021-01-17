@@ -5,7 +5,7 @@ import { Administrator } from './controlers/entities/administrator.entity';
 import { ArticleFeature } from './controlers/entities/article-feature.entity';
 import { ArticlePrice } from './controlers/entities/article-price.entity';
 import { Article } from './controlers/entities/article.entity';
-import { CartArticle } from './controlers/entities/cart-article';
+import { CartArticle } from './controlers/entities/cart-article.entity';
 import { Cart } from './controlers/entities/cart.entity';
 import { Category } from './controlers/entities/category.entity';
 import { Feature } from './controlers/entities/feature.entity';

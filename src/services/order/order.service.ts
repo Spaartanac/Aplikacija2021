@@ -31,7 +31,7 @@ export class OrderService {
             if (!cart){
                 return new ApiResponse("error", -7002 , "No such cart found!");
             }
-            if (cart.cartArticles.length === 0){
+            if (cart.cartArticles.length === 0   ){
                 return new ApiResponse("error", -7003 , "This cart is empty!");
             }
 
