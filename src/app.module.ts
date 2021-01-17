@@ -24,6 +24,7 @@ import { ArticleService } from './services/article/article.service';
 import { PhotoService } from './services/photo/photo.service';
 import { FeatureService } from './services/feature/feature.service';
 import { FeatureController } from './controlers/api/feature.controller';
+import { UserService } from './services/user/user.service';
 
 
 @Module({
@@ -82,6 +83,7 @@ import { FeatureController } from './controlers/api/feature.controller';
     ArticleService,  
     PhotoService,
     FeatureService,
+    UserService,
   ],
   exports: [
     AdministratorService,
