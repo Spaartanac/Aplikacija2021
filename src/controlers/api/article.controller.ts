@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Patch, Post, Req, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Param, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Crud } from "@nestjsx/crud";
 import { Article } from "src/controlers/entities/article.entity";
@@ -14,6 +14,8 @@ import * as fileType from 'file-type';
 import * as fs from 'fs';
 import * as sharp from 'sharp';
 import { EditArticleDto } from "src/dtos/article/edit.article.dto";
+import { RoleCheckedGuard } from "src/misc/role.checker.guard";
+import { AllowToRoles } from "src/misc/allow.to.roles.descriptor";
 @Controller('api/article')
 @Crud({
     model:{
@@ -54,18 +56,24 @@ export class ArticleController{
         public service : ArticleService,
         public photoService: PhotoService
         ){ }
-
+        
+   @UseGuards(RoleCheckedGuard)
+   @AllowToRoles('administrator')
     @Post('createFull')    // POST http://localhost:3000/api/article/createFull/
     createFullArticle(@Body() data: AddArticleDto){
         return this.service.createFullArticle(data);
     }
     
+     @UseGuards(RoleCheckedGuard)
+     @AllowToRoles('administrator')
     @Patch(':id')
     editFullArticle(@Param('id') id: number, @Body() data: EditArticleDto){
         return this.service.editFullArticle(id, data);
     }
 
-    @Post(':id/uploadPhoto/') // POST http://localhost:3000/api/article/:id/uploadPhoto/
+    @Post(':id/uploadPhoto/') // POST http://localhost:3000/api/article/:id/uploadPhoto/   
+    @UseGuards(RoleCheckedGuard)
+    @AllowToRoles('administrator')
     @UseInterceptors(
         FileInterceptor('photo', {
             storage: diskStorage({      
@@ -174,6 +182,8 @@ export class ArticleController{
 
     // http://localhost:3000/api/article/1/deletePhoto/45 
     @Delete(':articleId/deletePhoto/:photoId')
+    @UseGuards(RoleCheckedGuard)
+    @AllowToRoles('administrator')
     public async deletePhoto(
         @Param('articleId') articleId: number,
         @Param('photoId') photoId: number,){
