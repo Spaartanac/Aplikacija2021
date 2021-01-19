@@ -31,6 +31,7 @@ import { OrderService } from './services/order/order.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailConfig } from 'config/mail.config';
 import { OrderMailer } from './services/order/order.mailer.service';
+import { UserToken } from './controlers/entities/user-token.entity';
 
 
 @Module({
@@ -53,7 +54,9 @@ import { OrderMailer } from './services/order/order.mailer.service';
       Feature,
       Order,
       Photo,
-      User,]
+      User,
+      UserToken,
+    ]
     }),
     TypeOrmModule.forFeature([
       Administrator,
@@ -67,6 +70,7 @@ import { OrderMailer } from './services/order/order.mailer.service';
       Order,
       Photo,
       User,
+      UserToken,
       
 
 
